@@ -25,10 +25,5 @@ public class ShopmeBackEndApplication {
 	public String home() {
 		return "index";
 	}
-	@Bean
-	CommandLineRunner init(UserService userService) {
-		return args -> {
-			userService.changeEnabled(99,true);
-		};
-	}
+
 }

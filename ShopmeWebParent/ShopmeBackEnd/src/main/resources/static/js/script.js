@@ -10,10 +10,32 @@ function checkPasswordMatch() {
         submit.disabled = false;
     }
 }
+document.getElementById('fileImage').addEventListener("change",(e)=>{
+    let fileSize = e.target.files[0].size
+    if(fileSize> 1024*1024){
+        e.target.setCustomValidity("You must choose an image less than 1MB!")
+        e.target.reportValidity()
+    }else{
+        e.target.setCustomValidity('')
+        showImageThumbnail(e.target)
+    }
+
+})
 document.getElementById("myButton").addEventListener("click",function (){
     window.location.href = "/ShopmeAdmin/users";
-})
 
+})
+function showImageThumbnail(fileInput){
+    let file = fileInput.files[0];
+
+    if(file){
+        let reader = new FileReader();
+        reader.onload = (e)=>{
+            document.getElementById('thumbnail').setAttribute("src",e.target.result)
+        }
+        reader.readAsDataURL(file);
+    }
+}
 
 const showModal = (title, message) => {
     document.getElementById("modalTitle").innerText = title;
@@ -26,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("emailForm");
     const emailInput = document.getElementById("email");
     const id = document.getElementById("id")
-    let csrfValue = document.querySelector("input[name='_csrf']").value;
+    //let csrfValue = document.querySelector("input[name='_csrf']").value;
 
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
