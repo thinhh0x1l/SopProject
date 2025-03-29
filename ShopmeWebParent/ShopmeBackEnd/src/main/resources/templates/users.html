@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{|/webjars/bootstrap/5.3.3/css/bootstrap.min.css|}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <title>Document</title>
+</head>
+<body>
+<div class="container-fluid">
+    <div>
+        <nav class="navbar navbar-expand-lg bg-black navbar-dark">
+            <a class="navbar-brand" th:href="@{/}">
+                <img th:src="@{/images/logo-hoc-vien-ky-thuat-mat-ma.jpg}" style="width: 100px; height: auto;">
+            </a>
+            <!--là 1 nút toggler  -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <!--collapse: ẩn hoặc hiện nội dung khi nhấn  -->
+            <!--collapse: Định dạng nội dung menu khi mở ra  -->
+            <div class="collapse navbar-collapse" id="topNavbar">
+                <ul class="navbar-nav">
+                    <li class="nav-item"><a class="nav-link" th:href="@{/users}">Users</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/categories}">Categories</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/brands}">Brands</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/products}">Products</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}">Customers</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/shipping}">Shipping</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/orders}">Orders</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/report}">Sales Report</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/articles}">Articles</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/menus}">Menus</a></li>
+                    <li class="nav-item"><a class="nav-link" th:href="@{/settings}">Settings</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div>
+        <h2>Manage Users</h2>
+        <a th:href="@{/users/new}">Create New User</a>
+    </div>
+    <div th:if="${message != null}" class="alert alert-success text-center">
+        <span th:text="${message}"></span>
+    </div>
+    <div class="table table-responsive-xl"> <!--Có thanh kéo khi bị table bị thu nhỏ-->
+        <table class="table table-bordered table-hover table-striped"> <!--Viền, sáng vùng(row) trỏ, màu sọc vằn-->
+            <thead class="table-dark">
+            <tr>
+                <th>User ID</th>
+                <th>Photo</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Roles</th>
+                <th>Enable</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${listUsers}">
+                <td th:text="${user.id}"></td>
+                <td><span class="fas fa-portrait fa-3x icon-silver"></span> </td >
+                <td th:text="${user.email}"></td>
+                <td th:text="${user.firstName}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.roles}"></td>
+                <td>
+                    <a th:if="${user.enabled}" class="fa-solid fa-user-check fa-2x icon-green"
+                        th:href="@{'/users/'+${user.id}+'/enabled/false'}"><=/a>
+                    <a th:unless="${user.enabled}" class="fa-solid fa-user fa-2x icon-darkgray"
+                       th:href="@{'/users/'+${user.id}+'/enabled/true'}"></a>
+                </td>
+                <td>
+                    <a th:href="@{|/users/edit/${user.id}|}" class="fa-solid fa-pen-to-square fa-2x icon-green" title="Edit this user"></a> &nbsp;
+                    <a  id="link-delete"
+                        th:href="@{|/users/delete/${user.id}|}"
+                        class="fa-solid fa-trash fa-2x icon-black link-delete"
+                        th:userId="${user.id}">
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center">
+        <p>Shopme Control Panel - Copyright &copy; Shopme</p>
+    </div>
+</div>
+<div class="modal fade text-center" id="confirmModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h4 class="modal-title w-100 text-center " >Delete Confirmation</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <span id="confirmText" > </span>
+            </div>
+            <div class="modal-footer">
+                <a id="confirmUrlDelete" class="btn btn-success" href="">Yes</a>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script >
+
+    document.addEventListener("DOMContentLoaded", () =>{
+        const del = document.getElementById("link-delete")
+        del.addEventListener("click", async (eve) =>{
+            eve.preventDefault()
+            let e = document.getElementById('confirmUrlDelete')
+            e.setAttribute('href',eve.target.getAttribute('href'))
+            console.log(e.getAttribute('href'))
+            document.getElementById('confirmText').textContent = "Are you sure you want to delete this User Id: " + eve.target.getAttribute("userId")
+            new bootstrap.Modal(document.getElementById('confirmModal')).show()
+        })
+    })
+</script>
+</body>
+</html>
