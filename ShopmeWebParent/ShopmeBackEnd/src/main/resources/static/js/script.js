@@ -25,6 +25,7 @@ document.getElementById("myButton").addEventListener("click",function (){
     window.location.href = "/ShopmeAdmin/users";
 
 })
+
 function showImageThumbnail(fileInput){
     let file = fileInput.files[0];
 
@@ -48,11 +49,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("emailForm");
     const emailInput = document.getElementById("email");
     const id = document.getElementById("id")
-    //let csrfValue = document.querySelector("input[name='_csrf']").value;
-
+   // let csrfValue = document.querySelector("input[name='_csrf']").value;
+    console.log(id.value + ' - ' + emailInput.value )
     form.addEventListener("submit", async (event) => {
         event.preventDefault();
-        const isExisted = await checkEmailExists(id.value,emailInput.value,csrfValue);
+        const isExisted = await checkEmailExists(id.value,emailInput.value);
         if (isExisted === "Ok")
             showModal("WARNING", emailInput.value+ " đã tồn tại" );
         else if(isExisted === "No")
@@ -60,12 +61,14 @@ document.addEventListener("DOMContentLoaded", () => {
         else{}
     });
 });
-const checkEmailExists = async (id,email,csrfValue) => {
+
+const checkEmailExists = async (id,email) => {
+
     try{
         let response = await fetch("http://localhost:8080/ShopmeAdmin/users/check_email", {
             method: "POST",
-            headers: { "Content-Type": "application/json" ,
-                "X-CSRF-TOKEN": csrfValue  },// Gửi CSRF token để server xác thực
+            headers: { "Content-Type": "application/json" ,},
+                // 'X-XSRF-TOKEN': csrfValue},// Gửi CSRF token để server xác thực
             body: JSON.stringify({ id,email })
         })
         if(!response.ok)
@@ -77,3 +80,7 @@ const checkEmailExists = async (id,email,csrfValue) => {
         return false;
     }
 };
+
+    document.getElementById('logoutLink').addEventListener('click',async (e)=>{
+        document.querySelector('form').submit()
+    })

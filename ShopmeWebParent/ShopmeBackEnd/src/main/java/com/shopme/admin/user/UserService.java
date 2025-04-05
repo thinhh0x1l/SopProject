@@ -5,6 +5,9 @@ import com.shopme.common.entity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import java.util.List;
 @Service
 @Transactional
 public class UserService {
+    public static final int USERS_PER_PAGE= 5 ;
     @Autowired
     private PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -27,13 +31,20 @@ public class UserService {
     public List<Role> listRoles(){
         return roleRepository.findAll();
     }
-    public void save(User user){
-        if(user.getId() != null && user.getPassword().isEmpty()){
+    public Page<User> listByPage(int pageNum,String sortField, String sortDir){
+        Sort sort = Sort.by(sortField);
+        sort = sortDir.equals("asc") ? sort.ascending() : sort.descending();
+        return userRepository.findAll(PageRequest.of(pageNum-1, USERS_PER_PAGE, sort));
+    }
+    public User save(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        if(user.getId() != null) {
             User u = userRepository.findById(user.getId()).get();
-            user.setPassword(u.getPassword());
-        }else
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+            user.setPhotos(u.getPhotos());
+            if (user.getPassword().isEmpty())
+                user.setPassword(u.getPassword());
+        }
+        return userRepository.save(user);
     }
     public boolean isEmailUnique(Integer id, String email) {
         boolean check = userRepository.existsByEmail(email);

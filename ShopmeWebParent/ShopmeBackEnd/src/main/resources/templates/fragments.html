@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head th:fragment="page_head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{|/webjars/bootstrap/5.3.3/css/bootstrap.min.css|}">
+    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/script.js}" defer></script>
+    <title th:text="${title}"></title>
+
+</head>
+<body>
+<div th:fragment="footer" class="text-center m-3">
+    <p>Shopme Control Panel - Copyright &copy; Shopme</p>
+</div>
+</body>
+</html>

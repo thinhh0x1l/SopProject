@@ -17,6 +17,7 @@ public class UserRestController {
     @PostMapping("/users/check_email")
     public ResponseEntity<String> checkDuplicateEmail(@RequestBody Map<String, String> request) {
         String email = request.get("email");
+
         Integer id = request.get("id").isEmpty() ? -1: Integer.parseInt(request.get("id"));
          if(userService.isEmailUnique(id,email))
              return ResponseEntity.ok("EXISTED");

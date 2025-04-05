@@ -22,7 +22,7 @@ public class User {
     @Column(length = 64)
     private String photos;
     private boolean enabled;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id" , referencedColumnName = "id"),
@@ -35,6 +35,13 @@ public class User {
 
     public User(Integer id) {
         this.id = id;
+    }
+
+    @Transient
+    public String getPhotosImagePath() {
+        if(id== null ||photos == null || photos.isEmpty())
+            return "/images/img.png";
+        return "/user-photos/"+this.id+"/" + this.photos;
     }
 
     public User(String email, String password, String firstName, String lastName) {
@@ -110,6 +117,7 @@ public class User {
     public void addRole(Role role) {
         this.roles.add(role);
     }
+
 
     @Override
     public String toString() {

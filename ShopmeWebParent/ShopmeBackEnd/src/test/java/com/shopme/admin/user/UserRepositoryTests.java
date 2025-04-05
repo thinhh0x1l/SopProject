@@ -7,13 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.Rollback;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DataJpaTest(showSql = false)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Rollback(false)
 public class UserRepositoryTests {
@@ -21,8 +23,6 @@ public class UserRepositoryTests {
     private UserRepository userRepository;
     @Autowired
     private TestEntityManager entityManager;
-    @Autowired
-    private UserService userService;
     @Test
     public void testCreateNewUserWithOneRole() {
         Role roleAdmin = entityManager.find(Role.class,1);
@@ -68,7 +68,8 @@ public class UserRepositoryTests {
     }
 
     @Test
-    public void testChangeEnabled(){
-        userService.changeEnabled(1,false);
+    public void testListFirstPage(){
+        Page<User> users = userRepository.findAll(PageRequest.of(1, 10));
+        users.forEach(System.out::println);
     }
 }

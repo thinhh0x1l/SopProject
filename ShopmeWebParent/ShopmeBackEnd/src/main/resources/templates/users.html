@@ -1,44 +1,9 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" th:href="@{|/webjars/bootstrap/5.3.3/css/bootstrap.min.css|}">
-    <link rel="stylesheet" type="text/css" th:href="@{/fontawesome/all.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/style.css}">
-    <script type="text/javascript" th:src="@{/webjars/bootstrap/5.3.3/js/bootstrap.bundle.min.js}"></script>
-    <title>Document</title>
-</head>
+<head th:replace="~{fragments :: page_head('Users - Shopme Admin')}"></head>
 <body>
 <div class="container-fluid">
-    <div>
-        <nav class="navbar navbar-expand-lg bg-black navbar-dark">
-            <a class="navbar-brand" th:href="@{/}">
-                <img th:src="@{/images/logo-hoc-vien-ky-thuat-mat-ma.jpg}" style="width: 100px; height: auto;">
-            </a>
-            <!--là 1 nút toggler  -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#topNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <!--collapse: ẩn hoặc hiện nội dung khi nhấn  -->
-            <!--collapse: Định dạng nội dung menu khi mở ra  -->
-            <div class="collapse navbar-collapse" id="topNavbar">
-                <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link" th:href="@{/users}">Users</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/categories}">Categories</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/brands}">Brands</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/products}">Products</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/customers}">Customers</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/shipping}">Shipping</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/orders}">Orders</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/report}">Sales Report</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/articles}">Articles</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/menus}">Menus</a></li>
-                    <li class="nav-item"><a class="nav-link" th:href="@{/settings}">Settings</a></li>
-                </ul>
-            </div>
-        </nav>
-    </div>
+    <div th:replace="~{navigation :: menu}"></div>
     <div>
         <h2>Manage Users</h2>
         <a th:href="@{/users/new}">Create New User</a>
@@ -50,23 +15,57 @@
         <table class="table table-bordered table-hover table-striped"> <!--Viền, sáng vùng(row) trỏ, màu sọc vằn-->
             <thead class="table-dark">
             <tr>
-                <th>User ID</th>
+                <th>
+                    <a th:class="${(sortField == 'id' ? 'text-bg-info' : 'text-white') + ' link-underline link-underline-opacity-0'}"
+                       th:href="@{'/users/page/'+${currentPage}+'?sortField=id&sortDir='+${reSortDir}}">
+                        User ID
+                    </a>
+                    <span th:if="${sortField=='id'}"
+                          th:class="${sortDir !='asc' ? 'fas fa-sort-up' :'fas fa-sort-down'}"></span>
+                </th>
                 <th>Photo</th>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th>
+                    <a th:class="${(sortField == 'email' ? 'text-bg-info' : 'text-white') + ' link-underline link-underline-opacity-0'}"
+                       th:href="@{'/users/page/'+${currentPage}+'?sortField=email&sortDir='+${reSortDir}}">
+                        Email
+                    </a>
+                    <span th:if="${sortField=='email'}"
+                          th:class="${sortDir !='asc' ? 'fas fa-sort-up' :'fas fa-sort-down'}"></span>
+                </th>
+                <th>
+                    <a th:class="${(sortField == 'lastName' ? 'text-bg-info' : 'text-white') + ' link-underline link-underline-opacity-0'}"
+                       th:href="@{'/users/page/'+${currentPage}+'?sortField=lastName&sortDir='+${reSortDir}} ">
+                        Last Name</a>
+                    <span th:if="${sortField == 'lastName'}"
+                          th:class="${sortDir != 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+                </th>
+                <th>
+                    <a th:class="${(sortField == 'firstName' ? 'text-bg-info' : 'text-white') + ' link-underline link-underline-opacity-0'}"
+                       th:href="@{'/users/page/'+${currentPage}+'?sortField=firstName&sortDir='+${reSortDir}} ">
+                        First Name</a>
+                    <span th:if="${sortField == 'firstName'}"
+                        th:class="${sortDir != 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
+                </th>
                 <th>Roles</th>
-                <th>Enable</th>
+                <th>
+                    <a th:class="${(sortField == 'enabled' ? 'text-bg-info' : 'text-white') + ' link-underline link-underline-opacity-0'}"
+                       th:href="@{'/users/page/'+${currentPage}+'?sortField=enabled&sortDir='+${reSortDir}} ">
+                        Enabled</a>
+                    <span th:if="${sortField == 'enabled'}"
+                          th:class="${sortDir != 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down'}"></span>
                 <th></th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="user : ${listUsers}">
                 <td th:text="${user.id}"></td>
-                <td><span class="fas fa-portrait fa-3x icon-silver"></span> </td >
+                <td>
+                    <img th:src="@{${user.getPhotosImagePath()}}"
+                        style="width: 50px; height: auto">
+                </td >
                 <td th:text="${user.email}"></td>
-                <td th:text="${user.firstName}"></td>
                 <td th:text="${user.lastName}"></td>
+                <td th:text="${user.firstName}"></td>
                 <td th:text="${user.roles}"></td>
                 <td>
                     <a th:if="${user.enabled}" class="fa-solid fa-user-check fa-2x icon-green"
@@ -86,9 +85,32 @@
             </tbody>
         </table>
     </div>
-    <div class="text-center">
-        <p>Shopme Control Panel - Copyright &copy; Shopme</p>
+    <div class="text-center m-1" th:if="${totalItems >0}">
+        <span th:text="'Showing users # '+${startCount}+' to '+${endCount}+' of '+${totalItems}"></span>
     </div>
+    <div class="text-center m-1" th:if="${totalItems == 0}">
+        <span th:text="'No Users Found'"></span>
+    </div>
+    <div >
+        <nav >
+            <ul class="pagination justify-content-center">
+                <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{'/users/page/1?sortField='+${sortField}+'&sortDir='+${sortDir}}">First</a></li>
+                <li th:class="${currentPage == 1 ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{'/users/page/'+${currentPage-1}+'?sortField='+${sortField}+'&sortDir='+${sortDir}}">Previous</a></li>
+                <li th:class="${currentPage == i ? 'page-item active' : 'page-item'}"
+                    th:each="i : ${#numbers.sequence(1,totalPages)}">
+                    <a th:if="${currentPage!=i}" class="page-link" th:href="@{'/users/page/'+${i}+'?sortField='+${sortField}+'&sortDir='+${sortDir}}" th:text="${i}"></a>
+                    <a th:if="${currentPage==i}" class="page-link" th:text="${i}"></a>
+                </li>
+                <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{'/users/page/'+${currentPage+1}+'?sortField='+${sortField}+'&sortDir='+${sortDir}}">Next</a></li>
+                <li th:class="${currentPage == totalPages ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{'/users/page/'+${totalPages}+'?sortField='+${sortField}+'&sortDir='+${sortDir}}">Last</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div th:replace="~{fragments :: footer}"></div>
 </div>
 <div class="modal fade text-center" id="confirmModal">
     <div class="modal-dialog">

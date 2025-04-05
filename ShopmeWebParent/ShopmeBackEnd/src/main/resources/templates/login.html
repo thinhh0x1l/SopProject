@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: page_head('Login - ShopMe')}"></head>
+<body>
+    <div class="container-fluid text-center">
+        <div>
+            <img th:src="@{/images/img.png}">
+        </div>
+        <form th:action="@{/login}" method="post" style="max-width: 350px; margin: 0 auto">
+            <div th:if="${param.error}">
+                <p class="text-danger" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}">
+                </p>
+            </div>
+            <div th:if="${param.logout}">
+                <p class="text-warning" >
+                    Bạn đã đăng xuất
+                </p>
+            </div>
+            <div class="border border-secondary rounded p-3">
+                <p>Access to Shopme Control Panel</p>
+                <p>
+                    <input type="email" name="email" class="form-control" placeholder="E-mail" required>
+                </p>
+                <p>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                </p>
+                <p>
+                    <input type="submit" value="Login" class="btn btn-primary" >
+                </p>
+            </div>
+        </form>
+        <div th:replace="~{fragments :: footer}"></div>
+    </div>
+</body>
+</html>
